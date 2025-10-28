@@ -14,14 +14,17 @@
       <h1 v-text="sitename"></h1>
     </header>
 
-    <main class="container">
-      <!-- Display lesson details -->
-      <article class="card">
-        <h2>{{ lesson.subject }}</h2>
-        <div>Location: {{ lesson.location }}</div>
-        <div>Price: £{{ lesson.price }}</div>
-      </article>
-    </main>
+    <main class="container">  
+      <!--Displaying multiple lessons -->  
+      <section class="lessons">  
+        <article class="card" v-for="lesson in lessons" :key="lesson.id">  
+          <h2>{{ lesson.subject }}</h2>  
+          <div>Location: {{ lesson.location }}</div>  
+          <div>Price: £{{ lesson.price }}</div>  
+          <div>Spaces: {{ lesson.spaces }}</div>  
+        </article>  
+      </section>  
+    </main>  
   </div>
 
   <script src="lessons.js"></script>
@@ -31,7 +34,15 @@
       el: '#app',
       data: {
         sitename: 'Lessons',
-        lesson: lessons[0] || {}
+        lessons: (typeof lessons !== 'undefined') ? lessons : []
+      },
+      created() {  
+        //Checks if the lessons data is loaded  
+        if (typeof lessons !== 'undefined' && Array.isArray(lessons) && lessons.length) {  
+          this.lessons = lessons;  
+        } else {  
+          console.warn('lessons.js not found or empty');  
+        }  
       }
     });
   </script>
