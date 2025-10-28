@@ -13,13 +13,25 @@
     <header>
       <h1 v-text="sitename"></h1>
     </header>
+
+    <main class="container">
+      <!-- Display lesson details -->
+      <article class="card">
+        <h2>{{ lesson.subject }}</h2>
+        <div>Location: {{ lesson.location }}</div>
+        <div>Price: £{{ lesson.price }}</div>
+      </article>
+    </main>
   </div>
+
+  <script src="lessons.js"></script>
 
   <script>
     var webstore = new Vue ({
       el: '#app',
       data: {
-        sitename: 'Lessons'
+        sitename: 'Lessons',
+        lesson: lessons[0] || {}
       }
     });
   </script>

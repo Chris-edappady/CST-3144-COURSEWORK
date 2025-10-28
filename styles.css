@@ -1,0 +1,8 @@
+/* Basic Css Style */
+.card 
+{ 
+  background: #fff; 
+  padding: 14px; 
+  border-radius: 12px; 
+  box-shadow: 0 8px 24px rgba(18,28,64,0.06); 
+}
