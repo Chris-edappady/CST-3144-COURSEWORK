@@ -11,8 +11,17 @@
 <body>
   <div id="app">
     <header>
-      <h1>Lessons</h1>
+      <h1 v-text="sitename"></h1>
     </header>
   </div>
+
+  <script>
+    var webstore = new Vue ({
+      el: '#app',
+      data: {
+        sitename: 'Lessons'
+      }
+    });
+  </script>
 </body>
 </html>
