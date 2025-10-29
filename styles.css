@@ -132,3 +132,41 @@ button.primary {
 }
 button.primary:hover { transform: translateY(-2px); box-shadow: 0 10px 20px rgba(43,110,246,0.14); }
 button.primary[disabled] { background: #bcd4ff; box-shadow:none; cursor:not-allowed; }
+
+/* Cart page styles (checkout) */
+.cart-page .cart-item 
+{ 
+  display:flex; 
+  justify-content:space-between; 
+  align-items:center; 
+  padding:12px 0; 
+  border-bottom:1px dashed #e6eef8; 
+}
+.cart-item-left 
+{ 
+  display:flex; 
+  flex-direction:column; 
+  gap:6px; 
+}
+.cart-item-right 
+{ 
+  text-align:right; 
+}
+
+/* secondary ghost button (back to lessons, remove) */
+button.ghost {
+  background:transparent;
+  border: 1px solid #e6eefc;
+  color:#0b1220;
+  padding:8px 10px;
+  border-radius:8px;
+  cursor:pointer;
+}
+button.ghost:hover { background:#fbfdff; }
+
+/* helps for spacing and text */
+.small 
+{ font-size:13px; color:#6b7280; }
+.mt-8 { margin-top:8px; }
+.mb-8 { margin-bottom:8px; }
+.text-right { text-align:right; }

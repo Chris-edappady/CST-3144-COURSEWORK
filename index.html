@@ -26,51 +26,86 @@
     </header>
 
     <main class="container">
-      <div class="controls">
-        <div class="controls-left">
-          <div class="controls-row">
-            <div class="sort-label">Sort By:</div>
-            <div class="radio-group">
-              <label><input type="radio" v-model="sortKey" value="subject" /> Subject</label>
-              <label><input type="radio" v-model="sortKey" value="location" /> Location</label>
-              <label><input type="radio" v-model="sortKey" value="price" /> Price</label>
+      <!-- Lessons / Products page -->
+      <div v-if="showProductPage">
+        <div class="controls">
+          <div class="controls-left">
+            <div class="controls-row">
+              <div class="sort-label">Sort By:</div>
+              <div class="radio-group">
+                <label><input type="radio" v-model="sortKey" value="subject" /> Subject</label>
+                <label><input type="radio" v-model="sortKey" value="location" /> Location</label>
+                <label><input type="radio" v-model="sortKey" value="price" /> Price</label>
+              </div>
+            </div>
+
+            <div class="controls-row">
+              <div class="order-label">Order:</div>
+              <div class="radio-group">
+                <label><input type="radio" v-model="sortDir" value="asc" /> Ascending</label>
+                <label><input type="radio" v-model="sortDir" value="desc" /> Descending</label>
             </div>
           </div>
+        </div>  
 
-          <div class="controls-row">
-            <div class="order-label">Order:</div>
-            <div class="radio-group">
-              <label><input type="radio" v-model="sortDir" value="asc" /> Ascending</label>
-              <label><input type="radio" v-model="sortDir" value="desc" /> Descending</label>
-          </div>
-        </div>
-      </div>  
-
-      <div class="total-lessons">Total Lessons: {{ lessons.length }}</div>
+        <div class="total-lessons">Total Lessons: {{ lessons.length }}</div>
       </div>
       <!--Displaying multiple lessons -->  
-      <section class="lessons">  
-        <article class="card" v-for="lesson in lessons" :key="lesson.id">  
-          <h2>{{ lesson.subject }}</h2>  
-          <div>Location: {{ lesson.location }}</div>  
-          <div>Price: £{{ lesson.price }}</div>  
-          <div>Spaces: {{ lesson.spaces }}</div>  
+        <section class="lessons">  
+          <article class="card" v-for="lesson in sortedLessons" :key="lesson.id">  
+            <h2>{{ lesson.subject }}</h2>  
+            <div>Location: {{ lesson.location }}</div>  
+            <div>Price: ${{ lesson.price }}</div>  
+            <div>Spaces: {{ lesson.spaces }}</div>  
 
-          <!-- Add to cart action-->
-           <div class="card-actions">
-            <button class="primary" :disabled="!canAddToCart(lesson)" v-on:click="addToCart(lesson)">
-              <i class="fas fa-cart-plus" aria-hidden="true"></i>
-              Add to cart
-            </button>
-           </div>
-        </article>  
-      </section>  
+            <!-- Add to cart action-->
+            <div class="card-actions">
+              <button class="primar y" :disabled="!canAddToCart(lesson)" v-on:click="addToCart(lesson)">
+                <i class="fas fa-cart-plus" aria-hidden="true"></i>
+                Add to cart
+              </button>
+            </div>
+          </article>  
+        </section>  
+      </div>
+
+      <!--Cart/Checkout page-->
+      <div v-else class="cart-page">
+        <h2>Cart</h2>
+        <!--Message for empty cart-->
+        <div v-if="cart.length === 0" class="small empty-cart-msg">
+          Your cart is empty.
+          <div class="mt-8">
+            <button class="ghost" @click="toggleCheckoutPage">Back to lessons</button>
+          </div>
+        </div>
+
+        <div v-else>
+          <!--Display cart items with quantity-->
+          <div class="cart-item" v-for="(qty, id) in cartSummary" :key="id">
+            <div class="cart-item-left">
+              <strong>{{  lessonById(id).subject  }}</strong>
+              <div class="small">{{ lessonById(id).location }}  - ${{ lessonById(id).price  }}</div>
+              <div class="small">Quantity:  {{ qty }}</div>
+            </div>
+
+            <div class="cart-item-right">  
+              <div class="mb-8">Total: ${{ lessonById(id).price * qty }}</div>  
+              <button class="ghost" @click="removeOneFromCart(id)">Remove one</button>  
+            </div>  
+          </div>
+          <!--Grand Total-->
+          <div class="text-right mt-8">
+            <div class="small">Grand total: <strong>${{ cartTotal }}</strong></div>
+          </div>
+      </div>
     </main>  
   </div>
 
   <script src="lessons.js"></script>
 
   <script>
+    //Cart Display logic
     var webstore = new Vue ({
       el: '#app',
       data: {
@@ -105,22 +140,47 @@
             return 0;
           });
           return arr;
+        },
+        // Summary of cart items by ID and quantity  
+        cartSummary() {  
+          const summary = {};  
+          this.cart.forEach(id => { summary[id] = (summary[id] || 0) + 1; });  
+          return summary;  
+        },
+        // Calculate total price of cart  
+        cartTotal() {  
+          return this.cart.reduce((sum, id) => {  
+            const lesson = this.lessons.find(l => l.id === +id);  
+            return sum + (lesson ? lesson.price : 0);  
+          }, 0);  
         }
       },
       methods: {
+        // Calculate remaining spaces for a lesson  
+        remainingSpaces(lesson) {  
+          const used = this.cartCount(lesson.id);  
+          return Math.max(0, lesson.spaces - used);  
+        },
+        // Check if add to cart is possible  
+        canAddToCart(lesson) {  
+          return this.remainingSpaces(lesson) > 0;  
+        },
         //Add lesson ID to cart if available
         addToCart(lesson) {
           if (this.canAddToCart(lesson)) this.cart.push(lesson.id);
-        },
-        //Checks if the lesson can be added based on spaces
-        canAddToCart(lesson)  {
-          return lesson.spaces  > this.cartCount(lesson.id);
         },
         //Counts how many times ID is in the cart
         cartCount(id) { return this.cart.filter(x => x  === id).length; },
         //Toggling between product and checkout pages
         toggleCheckoutPage(){
           this.showProductPage = !this.showProductPage;
+        },
+        //Get lesson by ID with fallback
+        lessonById(id) { return this.lessons.find(l => l.id === +id) || { subject:'Unknown', location:'', price:0 }; },
+        // Remove one instance of item from cart
+        removeOneFromCart(id) {
+          const idx = this.cart.indexOf(+id);
+          if (idx !== -1) this.cart.splice(idx, 1);
         }
       }
     });
