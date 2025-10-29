@@ -15,7 +15,29 @@
       <h1 v-text="sitename"></h1>
     </header>
 
-    <main class="container">  
+    <main class="container">
+      <div class="controls">
+        <div class="controls-left">
+          <div class="controls-row">
+            <div class="sort-label">Sort By:</div>
+            <div class="radio-group">
+              <label><input type="radio" v-model="sortKey" value="subject" /> Subject</label>
+              <label><input type="radio" v-model="sortKey" value="location" /> Location</label>
+              <label><input type="radio" v-model="sortKey" value="price" /> Price</label>
+            </div>
+          </div>
+
+          <div class="controls-row">
+            <div class="order-label">Order:</div>
+            <div class="radio-group">
+              <label><input type="radio" v-model="sortDir" value="asc" /> Ascending</label>
+              <label><input type="radio" v-model="sortDir" value="desc" /> Descending</label>
+          </div>
+        </div>
+      </div>  
+
+      <div class="total-lessons">Total Lessons: {{ lessons.length }}</div>
+      </div>
       <!--Displaying multiple lessons -->  
       <section class="lessons">  
         <article class="card" v-for="lesson in lessons" :key="lesson.id">  
@@ -35,7 +57,9 @@
       el: '#app',
       data: {
         sitename: 'Lessons',
-        lessons: (typeof lessons !== 'undefined') ? lessons : []
+        lessons: (typeof lessons !== 'undefined') ? lessons : [],
+        sortKey: 'subject',
+        sortDir: 'asc'
       },
       created() {  
         //Checks if the lessons data is loaded  
@@ -44,6 +68,24 @@
         } else {  
           console.warn('lessons.js not found or empty');  
         }  
+      },
+      computed: {
+        //Sorts the lessons based on the key and direction
+        sortedLessons() {
+          const arr = this.lessons.slice();
+          const key = this.sortKey;
+          const dir = this.sortDir === 'asc' ? 1 : -1;
+          arr.sort((a,b) =>  {
+            let va = a[key];  
+            let vb = b[key];  
+            if (typeof va === 'string') va = va.toLowerCase();  
+            if (typeof vb === 'string') vb = vb.toLowerCase();  
+            if (va > vb) return 1 * dir;  
+            if (va < vb) return -1 * dir;  
+            return 0;
+          });
+          return arr;
+        }
       }
     });
   </script>

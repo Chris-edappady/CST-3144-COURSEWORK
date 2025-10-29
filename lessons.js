@@ -13,5 +13,15 @@ let lessons = [
   "subject":"Chemistry", 
   "location":"New York", 
   "price":95, 
+  "spaces":5},
+{ "id": 4, 
+  "subject":"English", 
+  "location":"Texas", 
+  "price":80, 
+  "spaces":5},
+{ "id": 5, 
+  "subject":"Art", 
+  "location":"Washington D.C", 
+  "price":70, 
   "spaces":5}
 ];

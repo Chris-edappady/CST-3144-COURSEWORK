@@ -40,3 +40,56 @@ header
   border-radius: 12px; 
   box-shadow: 0 8px 24px rgba(18,28,64,0.06); 
 }
+
+/* Sorting controls */  
+.controls 
+{ 
+  display:flex; 
+  align-items:flex-start; 
+  justify-content:space-between; 
+  gap:12px;
+  margin-bottom:18px; 
+}  
+.controls-left 
+{
+  display:flex; 
+  flex-direction:column; 
+  gap:10px; }
+
+.controls-row 
+{ 
+  display:flex; 
+  gap:12px;
+  align-items:center; }
+
+.sort-label, .order-label 
+{ font-weight:600; 
+  font-size:14px; 
+  color:#111827; 
+}  
+
+.radio-group label
+{ 
+  display:inline-flex; 
+  align-items:center; 
+  gap:8px; 
+  padding:6px 10px; 
+  border-radius:8px; 
+  cursor:pointer; 
+  border:1px solid transparent; 
+  font-size:14px; 
+  background: #ffffff; 
+}  
+
+.radio-group label:hover 
+{ 
+  background:#fbfdff; 
+  border-color:#e8f0ff; 
+}  
+
+.total-lessons 
+{ 
+  font-size:14px; 
+  color:#6b7280; 
+  align-self:center; 
+  font-weight:600; }
