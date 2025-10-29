@@ -170,3 +170,30 @@ button.ghost:hover { background:#fbfdff; }
 .mt-8 { margin-top:8px; }
 .mb-8 { margin-bottom:8px; }
 .text-right { text-align:right; }
+
+/* checkout form*/
+.checkout-form 
+{
+  display:flex; 
+  flex-direction:column; 
+  gap:10px; 
+}
+.checkout-label 
+{ 
+  display:inline-block; 
+  min-width:70px; 
+  font-weight:600; 
+  color:#111827; 
+}
+.form-row 
+{ 
+  display:flex;
+  gap:8px; 
+  align-items:center; 
+}
+.form-row input 
+{ 
+  min-width:220px; 
+  padding:8px; 
+  border-radius:8px; 
+  border:1px solid #e6eefc; }

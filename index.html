@@ -44,30 +44,30 @@
               <div class="radio-group">
                 <label><input type="radio" v-model="sortDir" value="asc" /> Ascending</label>
                 <label><input type="radio" v-model="sortDir" value="desc" /> Descending</label>
+              </div>
             </div>
           </div>
         </div>  
-
-        <div class="total-lessons">Total Lessons: {{ lessons.length }}</div>
       </div>
+      <div class="total-lessons">Total Lessons: {{ lessons.length }}</div>
       <!--Displaying multiple lessons -->  
-        <section class="lessons">  
-          <article class="card" v-for="lesson in sortedLessons" :key="lesson.id">  
-            <h2>{{ lesson.subject }}</h2>  
-            <div>Location: {{ lesson.location }}</div>  
-            <div>Price: ${{ lesson.price }}</div>  
-            <div>Spaces: {{ lesson.spaces }}</div>  
+      <section class="lessons">  
+        <article class="card" v-for="lesson in sortedLessons" :key="lesson.id">  
+          <h2>{{ lesson.subject }}</h2>  
+          <div>Location: {{ lesson.location }}</div>  
+          <div>Price: ${{ lesson.price }}</div>  
+          <div>Spaces: {{ lesson.spaces }}</div>  
 
-            <!-- Add to cart action-->
-            <div class="card-actions">
-              <button class="primar y" :disabled="!canAddToCart(lesson)" v-on:click="addToCart(lesson)">
-                <i class="fas fa-cart-plus" aria-hidden="true"></i>
-                Add to cart
-              </button>
-            </div>
-          </article>  
-        </section>  
-      </div>
+          <!-- Add to cart action-->
+          <div class="card-actions">
+            <button class="primary" :disabled="!canAddToCart(lesson)" v-on:click="addToCart(lesson)">
+              <i class="fas fa-cart-plus" aria-hidden="true"></i>
+              Add to cart
+            </button>
+          </div>
+        </article>  
+      </section>  
+    </div>
 
       <!--Cart/Checkout page-->
       <div v-else class="cart-page">
@@ -98,6 +98,30 @@
           <div class="text-right mt-8">
             <div class="small">Grand total: <strong>${{ cartTotal }}</strong></div>
           </div>
+
+          <hr />
+
+          <!--Checkout form serction-->
+          <h3>Checkout</h3>
+          <div class="checkout-form">
+            <div class="form-row">
+              <label class="checkout-label">Name</label>
+              <input type="text" v-model.trim="order.name" placeholder="Letters only" />
+              <div class="small" v-if="order.name && !validName">Name must contain letters and spaces only.</div>
+            </div>
+
+            <div class="form-row">
+              <label class="checkout-label">Phone</label>
+              <input type="tel" v-model.trim="order.phone" placeholder="Numbers only" />
+              <div class="small" v-if="order.phone && !validPhone">Phone must contain numbers only.</div>
+            </div>
+
+            <div class="form-row mt-8">
+              <button class="primary" :disabled="!canCheckout" @click="checkoutSubmit">Checkout</button>
+              <button class="ghost" @click="toggleCheckoutPage">Back to lessons</button>
+            </div>
+          </div>
+        </div>
       </div>
     </main>  
   </div>
@@ -114,7 +138,8 @@
         cart: [],
         sortKey: 'subject',
         sortDir: 'asc',
-        showProductPage: true
+        showProductPage: true,
+        order: { name: '', phone: '' } //adding order object
       },
       created() {  
         //Checks if the lessons data is loaded  
@@ -153,7 +178,13 @@
             const lesson = this.lessons.find(l => l.id === +id);  
             return sum + (lesson ? lesson.price : 0);  
           }, 0);  
-        }
+        },
+        //Checks for valid name input  
+        validName() { return /^[A-Za-z ]+$/.test(this.order.name); },  
+        //Checks for valid phone number input  
+        validPhone() { return /^[0-9]+$/.test(this.order.phone); },  
+        //Checks if checkout is allowed  
+        canCheckout() { return this.validName && this.validPhone && this.cart.length > 0; }  
       },
       methods: {
         // Calculate remaining spaces for a lesson  
@@ -181,7 +212,15 @@
         removeOneFromCart(id) {
           const idx = this.cart.indexOf(+id);
           if (idx !== -1) this.cart.splice(idx, 1);
-        }
+        },
+        //Submits order and resets
+        checkoutSubmit() {  
+          if (!this.canCheckout) return;  
+          alert('Order submitted — Thank you!');  
+          this.cart = [];  
+          this.order = { name: '', phone: '' };  
+          this.showProductPage = true;  
+        },
       }
     });
   </script>
