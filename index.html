@@ -18,7 +18,10 @@
       <h1 v-text="sitename"></h1>
 
       <!-- Cart toggle button-->
-      <button class="ghost" v-on:click="toggleCheckoutPage" aria-label="Toggle cart">
+      <button class="ghost" 
+              v-on:click="toggleCheckoutPage"
+              :disabled="cart.length === 0 && showProductPage" 
+              aria-label="Toggle cart">
         <i class="fas fa-shopping-cart" aria-hidden="true"></i>
         Cart
         <span v-if="cart.length>0" class="cart-badge">{{ cart.length}}</span>
@@ -41,29 +44,61 @@
 
             <div class="controls-row">
               <div class="order-label">Order:</div>
-              <div class="radio-group">
+              <div class="radio-group" role="radiogroup" aria-label="Sort order">
                 <label><input type="radio" v-model="sortDir" value="asc" /> Ascending</label>
                 <label><input type="radio" v-model="sortDir" value="desc" /> Descending</label>
               </div>
             </div>
           </div>
+          
+          <div class="total-lessons">Total Lessons: {{ lessons.length }}</div>
         </div>  
-      </div>
-      <div class="total-lessons">Total Lessons: {{ lessons.length }}</div>
+      
       <!--Displaying multiple lessons -->  
-      <section class="lessons">  
+      <section class="lessons" aria-live="polite">  
         <article class="card" v-for="lesson in sortedLessons" :key="lesson.id">  
-          <h2>{{ lesson.subject }}</h2>  
-          <div>Location: {{ lesson.location }}</div>  
-          <div>Price: ${{ lesson.price }}</div>  
-          <div>Spaces: {{ lesson.spaces }}</div>  
+          <div class="card-header">
+            <div>
+              <h2 class="lesson-title">{{ lesson.subject }}</h2> 
+              <!--blank space kept between title & location--> 
+              <div class="lesson-spacer" aria-hidden="true"></div>
+              <div class="lesson-line">  
+                <div class="lesson-meta">
+                  <div class="lesson-location">Location: {{ lesson.location }}</div>  
+                </div>
+              </div>
+            </div>
 
-          <!-- Add to cart action-->
-          <div class="card-actions">
-            <button class="primary" :disabled="!canAddToCart(lesson)" v-on:click="addToCart(lesson)">
-              <i class="fas fa-cart-plus" aria-hidden="true"></i>
-              Add to cart
-            </button>
+            <div class="card-spaces">
+              <div class="small">Spaces</div>
+              <div class="price">{{ remainingSpaces(lesson) }}</div>
+            </div>
+          </div>
+
+          <!--Ratings-->
+          <div class="rating" aria-label="Rating">  
+              <i v-for="i in 5"  
+                 :key="i"  
+                 :class="(i <= (lesson.rating || 0)) ? 'fas fa-star filled' : 'far fa-star empty'"  
+                 aria-hidden="true"></i>  
+              <span class="rating-label">({{ lesson.rating || 0 }})</span>  
+          </div>
+
+          <!--Add button-->
+          <div class="card-actions">  
+              <button class="primary" :disabled="!canAddToCart(lesson)" v-on:click="addToCart(lesson)">  
+                <i class="fas fa-cart-plus" aria-hidden="true"></i>  
+                Add to cart  
+              </button>  
+          </div>
+
+          <!--Book Now note-->
+          <div class="small card-note">Book now</div>
+
+          <!--footer witht the price anchored at the bottom right-->
+          <div class="card-footer">
+            <div></div>
+            <div class="lesson-price">${{ lesson.price }}</div>
           </div>
         </article>  
       </section>  
@@ -85,7 +120,7 @@
           <div class="cart-item" v-for="(qty, id) in cartSummary" :key="id">
             <div class="cart-item-left">
               <strong>{{  lessonById(id).subject  }}</strong>
-              <div class="small">{{ lessonById(id).location }}  - ${{ lessonById(id).price  }}</div>
+              <div class="small">{{ lessonById(id).location }} - ${{ lessonById(id).price  }}</div>
               <div class="small">Quantity:  {{ qty }}</div>
             </div>
 
