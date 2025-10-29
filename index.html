@@ -7,12 +7,22 @@
 
   <!-- Vue.js v2 -->
   <script src="https://cdn.jsdelivr.net/npm/vue@2.7.16/dist/vue.js"></script>
+
+  <!--Font Awesome Icons-->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <link rel="stylesheet" href="styles.css">
 </head>
 <body>
   <div id="app">
     <header>
       <h1 v-text="sitename"></h1>
+
+      <!-- Cart toggle button-->
+      <button class="ghost" v-on:click="toggleCheckoutPage" aria-label="Toggle cart">
+        <i class="fas fa-shopping-cart" aria-hidden="true"></i>
+        Cart
+        <span v-if="cart.length>0" class="cart-badge">{{ cart.length}}</span>
+      </button>
     </header>
 
     <main class="container">
@@ -45,6 +55,14 @@
           <div>Location: {{ lesson.location }}</div>  
           <div>Price: £{{ lesson.price }}</div>  
           <div>Spaces: {{ lesson.spaces }}</div>  
+
+          <!-- Add to cart action-->
+           <div class="card-actions">
+            <button class="primary" :disabled="!canAddToCart(lesson)" v-on:click="addToCart(lesson)">
+              <i class="fas fa-cart-plus" aria-hidden="true"></i>
+              Add to cart
+            </button>
+           </div>
         </article>  
       </section>  
     </main>  
@@ -58,8 +76,10 @@
       data: {
         sitename: 'Lessons',
         lessons: (typeof lessons !== 'undefined') ? lessons : [],
+        cart: [],
         sortKey: 'subject',
-        sortDir: 'asc'
+        sortDir: 'asc',
+        showProductPage: true
       },
       created() {  
         //Checks if the lessons data is loaded  
@@ -85,6 +105,22 @@
             return 0;
           });
           return arr;
+        }
+      },
+      methods: {
+        //Add lesson ID to cart if available
+        addToCart(lesson) {
+          if (this.canAddToCart(lesson)) this.cart.push(lesson.id);
+        },
+        //Checks if the lesson can be added based on spaces
+        canAddToCart(lesson)  {
+          return lesson.spaces  > this.cartCount(lesson.id);
+        },
+        //Counts how many times ID is in the cart
+        cartCount(id) { return this.cart.filter(x => x  === id).length; },
+        //Toggling between product and checkout pages
+        toggleCheckoutPage(){
+          this.showProductPage = !this.showProductPage;
         }
       }
     });

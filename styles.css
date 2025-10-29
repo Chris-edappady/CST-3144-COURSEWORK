@@ -55,19 +55,16 @@ header
   display:flex; 
   flex-direction:column; 
   gap:10px; }
-
 .controls-row 
 { 
   display:flex; 
   gap:12px;
   align-items:center; }
-
 .sort-label, .order-label 
 { font-weight:600; 
   font-size:14px; 
   color:#111827; 
 }  
-
 .radio-group label
 { 
   display:inline-flex; 
@@ -80,16 +77,58 @@ header
   font-size:14px; 
   background: #ffffff; 
 }  
-
 .radio-group label:hover 
 { 
   background:#fbfdff; 
   border-color:#e8f0ff; 
 }  
-
 .total-lessons 
 { 
   font-size:14px; 
   color:#6b7280; 
   align-self:center; 
   font-weight:600; }
+
+/* cart button in header */
+header .ghost {
+  display:flex;
+  align-items:center;
+  gap:8px;
+  background: transparent;
+  border: 1px solid transparent;
+  padding:8px 12px;
+  border-radius:8px;
+  cursor:pointer;
+}
+header .ghost:hover {
+  background:#f8fafc;
+  border-color:#e6eefc;
+}
+.cart-badge {
+  background: #ef4444;
+  color: #fff;
+  padding: 2px 8px;
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 700;
+}
+
+/* actions */
+.card-actions { display:flex; gap:10px; align-items:center; margin-top:8px; }
+button.primary {
+  background: linear-gradient(180deg,#2b6ef6,#1e54d4);
+  color:#fff;
+  border: none;
+  padding:9px 12px;
+  border-radius:8px;
+  cursor:pointer;
+  display:inline-flex;
+  align-items:center;
+  gap:8px;
+  font-weight:700;
+  font-size:14px;
+  box-shadow: 0 6px 12px rgba(43,110,246,0.12);
+  transition: transform .12s ease, box-shadow .12s ease;
+}
+button.primary:hover { transform: translateY(-2px); box-shadow: 0 10px 20px rgba(43,110,246,0.14); }
+button.primary[disabled] { background: #bcd4ff; box-shadow:none; cursor:not-allowed; }
